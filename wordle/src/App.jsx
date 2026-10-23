@@ -1,4 +1,5 @@
 import './App.css'
+import { useState } from 'react'
 import Casilla from './components/Casilla.jsx'
 
 const FILAS = 6
@@ -14,7 +15,18 @@ function tableroVacio() {
 }
 
 function App() {
-  const intentos = tableroVacio()
+  const [intentos, setIntentos] = useState(tableroVacio())
+
+  function cambiarLetra(f, c, evento) {
+    const letra = evento.target.value.toUpperCase()
+    // Solo aceptamos una letra, o nada si se ha borrado
+    if (!/^[A-ZÑ]?$/.test(letra)) return
+
+    // Copiamos el tablero, cambiamos la copia y la guardamos
+    const copia = intentos.map((fila) => [...fila])
+    copia[f][c] = letra
+    setIntentos(copia)
+  }
 
   return (
     <div className="juego">
@@ -23,7 +35,11 @@ function App() {
         {intentos.map((fila, f) => (
           <div className="fila" key={f}>
             {fila.map((letra, c) => (
-              <Casilla key={c} letra={letra} />
+              <Casilla
+                key={c}
+                letra={letra}
+                onCambio={(evento) => cambiarLetra(f, c, evento)}
+              />
             ))}
           </div>
         ))}
