@@ -87,3 +87,85 @@ body {
   font-size: 1.2rem;
   font-weight: bold;
 }
+
+.aviso {
+  color: #b3261e;
+  font-weight: bold;
+}
+
+/* Accesibilidad: símbolo y borde distintos para cada estado */
+.casilla.correcta,
+.casilla.presente,
+.casilla.ausente {
+  background-repeat: no-repeat;
+  background-position: right 3px top 3px;
+  background-size: 14px;
+}
+
+.casilla.correcta {
+  /* ✓ y borde doble */
+  border: 4px double #ffffff;
+  outline: 2px solid #2e7d32;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-6' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+.casilla.presente {
+  /* ⇄ y borde discontinuo */
+  border: 3px dashed #1a1a1b;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1 4h10M8 1l3 3-3 3M11 8H1M4 5L1 8l3 3' fill='none' stroke='black' stroke-width='1.5'/%3E%3C/svg%3E");
+}
+
+.casilla.ausente {
+  /* ✕ y borde normal */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 2l8 8M10 2l-8 8' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+/* Teclado en pantalla */
+.teclado {
+  display: grid;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+.fila-teclado {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.tecla {
+  flex: 1;
+  max-width: 42px;
+  height: 52px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: #d3d6da;
+  color: #1a1a1b;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tecla.ancha {
+  max-width: 64px;
+}
+
+.tecla.correcta {
+  background: #2e7d32;
+  color: #ffffff;
+}
+
+.tecla.presente {
+  background: #f2c94c;
+}
+
+.tecla.ausente {
+  background: #5f6368;
+  color: #ffffff;
+}
+
+.tecla:focus-visible {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+}
