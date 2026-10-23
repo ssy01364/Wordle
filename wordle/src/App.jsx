@@ -1,9 +1,10 @@
 import './App.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Casilla from './components/Casilla.jsx'
 
 const FILAS = 6
 const COLUMNAS = 5
+const SOLUCION = 'PERRO'
 
 // Crea un tablero vacío: 6 filas de 5 letras en blanco
 function tableroVacio() {
@@ -14,21 +15,37 @@ function tableroVacio() {
   return tablero
 }
 
+// Decide el color de una letra ya comprobada
+function estadoDe(letra, columna) {
+  if (SOLUCION[columna] === letra) return 'correcta'
+  if (SOLUCION.includes(letra)) return 'presente'
+  return 'ausente'
+}
+
 function App() {
   const [intentos, setIntentos] = useState(tableroVacio())
   const [filaActual, setFilaActual] = useState(0)
 
-  const terminada = filaActual === FILAS
+  // El último intento comprobado, como texto: 'PERRO'
+  const ultimo = filaActual > 0 ? intentos[filaActual - 1].join('') : ''
+  const ganada = ultimo === SOLUCION
+  const terminada = ganada || filaActual === FILAS
+
+  useEffect(() => {
+    // Lleva el cursor a la primera casilla en la que se puede escribir
+    document.querySelector('.casilla:enabled')?.focus()
+  }, [filaActual])
 
   function cambiarLetra(f, c, evento) {
     const letra = evento.target.value.toUpperCase()
     // Solo aceptamos una letra, o nada si se ha borrado
     if (!/^[A-ZÑ]?$/.test(letra)) return
-
     // Copiamos el tablero, cambiamos la copia y la guardamos
     const copia = intentos.map((fila) => [...fila])
     copia[f][c] = letra
     setIntentos(copia)
+    // Después de escribir una letra, pasamos a la casilla siguiente
+    if (letra !== '') evento.target.nextElementSibling?.focus()
   }
 
   function comprobar(evento) {
@@ -37,10 +54,10 @@ function App() {
     if (terminada) return
     // No se puede comprobar una fila incompleta
     if (intentos[filaActual].includes('')) return
-
     setFilaActual(filaActual + 1)
   }
-return (
+
+  return (
     <form className="juego" onSubmit={comprobar}>
       <h1>Wordle</h1>
       <div className="tablero">
@@ -50,19 +67,27 @@ return (
               <Casilla
                 key={c}
                 letra={letra}
-                activa={f === filaActual}
+                estado={f < filaActual ? estadoDe(letra, c) : ''}
+                activa={f === filaActual && !terminada}
                 onCambio={(evento) => cambiarLetra(f, c, evento)}
               />
             ))}
           </div>
         ))}
       </div>
-      <button className="boton" type="submit">
-        Comprobar
-      </button>
+      {terminada ? (
+        <p className="mensaje" role="status">
+          {ganada
+            ? '¡Enhorabuena, has acertado!'
+            : `La palabra era ${SOLUCION}`}
+        </p>
+      ) : (
+        <button className="boton" type="submit">
+          Comprobar
+        </button>
+      )}
     </form>
   )
 }
 
 export default App
-
